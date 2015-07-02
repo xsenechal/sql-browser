@@ -29,6 +29,16 @@ class Main {
         return getUser(code)
     }
 
+    @Path("/static/{path}") @GET @Produces("text/plain")
+    public InputStream getStatic(@PathParam('path') String path) {
+        return new FileInputStream('static/' + path)
+    }
+
+    @Path("/") @GET @Produces("text/plain")
+    public InputStream getHome() {
+        return getStatic('index.html')
+    }
+
     def getUser(def code) {
         println "Connecting to the DB to check '$code'..."
         def sql = Sql.newInstance( db.url, db.user, db.psw)

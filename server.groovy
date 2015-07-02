@@ -6,6 +6,10 @@ import com.sun.jersey.api.core.*
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory
 import org.glassfish.grizzly.http.server.HttpServer
 
+/**
+ * https://jersey.java.net/documentation/latest/user-guide.html
+ * https://theholyjava.wordpress.com/2012/04/04/exposing-functionality-over-http-with-groovy-and-ultra-lightweight-http-servers/
+ */
 @GrabConfig(systemClassLoader = true)
 @GrabResolver(name = 'gretty', root = 'http://groovypp.artifactoryonline.com/groovypp/libs-releases-local')
 @Grapes([

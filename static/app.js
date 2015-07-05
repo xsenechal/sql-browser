@@ -23,4 +23,18 @@ function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter
         }
     });
 
+    $scope.getTables = function(){
+        $http.post('tables', {con:$scope.con}).success(function(rows){
+            $scope.headers = _.keys(rows[0]);
+            $scope.rows = rows;
+        });
+    };
+    $scope.getColumns = function(){
+        $http.post('columns/wp_comments', {con:$scope.con}).success(function(rows){
+            $scope.headers = _.keys(rows[0]);
+            $scope.rows = rows;
+        });
+    };
+
+
 }

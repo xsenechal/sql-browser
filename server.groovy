@@ -31,6 +31,23 @@ class Main {
         def result = sql.rows(client.request)
         return new JsonBuilder(result).toString()
     }
+    @Path("/tables") @POST @Produces("application/json")
+    public String getTables(String clientJson) {
+        def client = new JsonSlurper().parseText(clientJson)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        def resultSet = sql.connection.metaData.getTables(null, null, null, null)
+        def tables = getMap(resultSet)
+        return new JsonBuilder(tables).toString()
+    }
+
+    @Path("/columns/{table}") @POST @Produces("application/json")
+    public String getColumns(@PathParam("table") String table,  String clientJson) {
+        def client = new JsonSlurper().parseText(clientJson)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        def resultSet = sql.connection.metaData.getColumns(null, null, table, null)
+        def tables = getMap(resultSet)
+        return new JsonBuilder(tables).toString()
+    }
 
     @Path("/static/{path:.+}") @GET @Produces("text/plain")
     public InputStream getStatic(@PathParam('path') String path) {
@@ -49,6 +66,14 @@ class Main {
         println("Jersey app started at ${uri}")
         System.in.read();
         httpServer.stop();
+    }
+
+    private List getMap(resultSet) {
+        def list = []
+        while(resultSet.next()) {
+            list << resultSet.toRowResult()
+        }
+        return list
     }
 }
 

@@ -1,1 +1,82 @@
-Hello world
+<!doctype html>
+<html ng-app="sql-browser">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.4/united/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-hotkeys/1.4.5/hotkeys.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-hotkeys/1.4.5/hotkeys.min.js"></script>
+    <script src="static/app.js"></script>
+</head>
+<body  ng-controller="MainCtrl">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Sql browser</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <form class="navbar-form navbar-right">
+                <div class="form-group">
+                    <input ng-model="con.url" type="text" placeholder="jdbc url" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input ng-model="con.user" type="text" placeholder="user" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input ng-model="con.password" type="text" placeholder="password" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">Test</button>
+            </form>
+        </div><!--/.navbar-collapse -->
+    </div>
+</nav>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h2>Type request</h2>
+
+        <form>
+            <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
+            <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <table class="table table-bordered small">
+            <tr>
+                <th><span class="badge badge-important ng-binding">{{rows.length}}</span></th>
+                <th ng-repeat="h in headers">{{ h }}</th>
+            </tr>
+            <tr ng-repeat="r in rows track by $index">
+                <td>{{$index + 1}}</td>
+                <td ng-repeat="h in headers">{{r[h]}}</td>
+            </tr>
+        </table>
+
+
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; xsenechal 2015</p>
+    </footer>
+</div> <!-- /container -->
+
+</body>
+</html>

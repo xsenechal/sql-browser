@@ -1,3 +1,5 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 import groovy.sql.Sql
 
 import javax.ws.rs.*
@@ -22,34 +24,29 @@ import org.glassfish.grizzly.http.server.HttpServer
 @Path("/")
 class Main {
 
-    final def db = [url: 'jdbc:mysql://localhost:3306/user', user: 'root', psw: '' ]
-
-    @Path("/code/{code}") @GET @Produces("text/plain")
-    public String getUserByCode(@PathParam('code') String code) {
-        return getUser(code)
+    @Path("/request") @POST @Produces("application/json")
+    public String exeRequest(String clientJson) {
+        def client = new JsonSlurper().parseText(clientJson)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        def result = sql.rows(client.request)
+        return new JsonBuilder(result).toString()
     }
 
-    @Path("/static/{path}") @GET @Produces("text/plain")
+    @Path("/static/{path:.+}") @GET @Produces("text/plain")
     public InputStream getStatic(@PathParam('path') String path) {
         return new FileInputStream('static/' + path)
     }
 
-    @Path("/") @GET @Produces("text/plain")
+    @Path("/") @GET @Produces("text/html")
     public InputStream getHome() {
         return getStatic('index.html')
-    }
-
-    def getUser(def code) {
-        println "Connecting to the DB to check '$code'..."
-        def sql = Sql.newInstance( db.url, db.user, db.psw)
-        return sql.firstRow("select * from users where code = $code") ?: "No such code found"
     }
 
     public static startServer() {
         ResourceConfig resources = new ClassNamesResourceConfig(Main)
         def uri = UriBuilder.fromUri("http://localhost/").port(6789).build();
         HttpServer httpServer = GrizzlyServerFactory.createHttpServer(uri, resources);
-        println("Jersey app started with WADL available at ${uri}application.wadl")
+        println("Jersey app started at ${uri}")
         System.in.read();
         httpServer.stop();
     }

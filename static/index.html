@@ -11,6 +11,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-hotkeys/1.4.5/hotkeys.min.js"></script>
     <script src="static/app.js"></script>
+    <style>
+        .mystyle input[type="text"] {
+            height: 20px;
+            font-size: 10px;
+            line-height: 14px;
+        }
+        .mystyle label {
+            padding-top: 0px !important;
+        }
+    </style>
+
 </head>
 <body  ng-controller="MainCtrl">
 
@@ -47,33 +58,38 @@
     <div class="container">
         <h2>Type request</h2>
 
-        <div class="btn-group">
-            <label class="btn btn-primary" ng-model="requestMode" btn-radio="'Manual'">Manual</label>
-            <label class="btn btn-primary" ng-model="requestMode" btn-radio="'Form'">Form</label>
-        </div>
-        <div ng-switch="requestMode">
-            <form ng-switch-when="Manual">
-                <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
-                <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
-                <button class="form-control btn btn-default" ng-click="getTables()">Tables</button>
-                <button class="form-control btn btn-default" ng-click="getColumns()">Columns</button>
-            </form>
-            <form ng-switch-when="Form" class="form-horizontal">
+        <div class="row">
+            <div class="col-md-4 btn-group">
+                <label class="btn btn-primary" ng-model="requestMode" btn-radio="'Manual'">Manual</label>
+                <label class="btn btn-primary" ng-model="requestMode" btn-radio="'Form'">Form</label>
+            </div>
+            <div class="col-md-8" ng-if="requestMode == 'Form'">
                 <div class="form-group">
                     <label for="inputTable" class="col-sm-2 control-label">Table</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="inputTable" ng-model="selectedTable" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
                     </div>
                 </div>
-
-                <div class="form-group" ng-repeat="c in columns">
-                    <label for="{{c.COLUMN_NAME}}" class="col-sm-2 control-label">{{c.COLUMN_NAME}}</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]">
-                    </div>
-                </div>
+            </div>
+        </div>
+        <div class="row" ng-switch="requestMode">
+            <form ng-switch-when="Manual">
+                <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
                 <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
+                <button class="form-control btn btn-default" ng-click="getTables()">Tables</button>
+                <button class="form-control btn btn-default" ng-click="getColumns()">Columns</button>
             </form>
+            <div ng-switch-when="Form">
+                <form  class="form-horizontal mystyle">
+                    <div class="form-group col-md-6" ng-repeat="c in columns">
+                        <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]">
+                        </div>
+                    </div>
+                    <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

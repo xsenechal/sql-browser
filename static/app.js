@@ -2,6 +2,7 @@ angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys'])
     .controller('MainCtrl', MainCtrl);
 
 function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter) {
+    $scope.requestMode = 'Manual';
     $scope.con = {
         url: 'jdbc:mysql://localhost:3306/wp',
         user: "root",
@@ -22,17 +23,21 @@ function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter
             $scope.exeRequest();
         }
     });
-
+    $scope.tables = [];
     $scope.getTables = function(){
         $http.post('tables', {con:$scope.con}).success(function(rows){
-            $scope.headers = _.keys(rows[0]);
-            $scope.rows = rows;
+            $scope.tables = rows;
         });
     };
-    $scope.getColumns = function(){
-        $http.post('columns/wp_comments', {con:$scope.con}).success(function(rows){
-            $scope.headers = _.keys(rows[0]);
-            $scope.rows = rows;
+    $scope.getTables();
+    $scope.onTableSelect = function($item, $model, $label){
+        $scope.getColumns($item.TABLE_NAME);
+    };
+    $scope.columns = [];
+    $scope.criterias = {};
+    $scope.getColumns = function(tableName){
+        $http.post('columns/' + tableName, {con:$scope.con}).success(function(columns){
+            $scope.columns = columns;
         });
     };
 

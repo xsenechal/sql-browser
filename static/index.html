@@ -81,7 +81,7 @@
             </form>
             <div ng-switch-when="Form">
                 <form  class="form-horizontal mystyle">
-                    <div class="form-group col-md-6" ng-repeat="c in columns">
+                    <div class="form-group col-md-6" ng-repeat="c in metadata.columns">
                         <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})">

@@ -33,11 +33,11 @@ function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter
     $scope.onTableSelect = function($item, $model, $label){
         $scope.getColumns($item.TABLE_NAME);
     };
-    $scope.columns = [];
+    $scope.metadata = [];
     $scope.criterias = {};
     $scope.getColumns = function(tableName){
-        $http.post('columns/' + tableName, {con:$scope.con}).success(function(columns){
-            $scope.columns = columns;
+        $http.post('metadata/' + tableName, {con:$scope.con}).success(function(metadata){
+            $scope.metadata = metadata;
         });
     };
 

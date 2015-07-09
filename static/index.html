@@ -21,6 +21,9 @@
         .mystyle label {
             padding-top: 0px !important;
         }
+        .mystyle .form-group {
+            margin-bottom: 0px;
+        }
     </style>
 
 </head>
@@ -74,7 +77,7 @@
                 <div class="form-group">
                     <label for="inputTable" class="col-sm-2 control-label">Table</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputTable" ng-model="selectedTable" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
+                        <input type="text" class="form-control mousetrap" id="inputTable" ng-model="selectedTable" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
                     </div>
                 </div>
             </div>
@@ -84,11 +87,11 @@
                 <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
                 <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
                 <button class="form-control btn btn-default" ng-click="getTables()">Tables</button>
-                <button class="form-control btn btn-default" ng-click="getColumns()">Columns</button>
+                <button class="form-control btn btn-default" ng-click="getMetadata()">Metadata</button>
             </form>
             <div ng-switch-when="Form">
                 <form  class="form-horizontal mystyle">
-                    <div class="form-group col-md-6" ng-repeat="c in columns">
+                    <div class="form-group col-md-6" ng-repeat="c in metadata.columns">
                         <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>
                         <div class="col-md-8">
                             <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})">

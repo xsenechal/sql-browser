@@ -40,13 +40,15 @@ class Main {
         return new JsonBuilder(tables).toString()
     }
 
-    @Path("/columns/{table}") @POST @Produces("application/json")
+    @Path("/metadata/{table}") @POST @Produces("application/json")
     public String getColumns(@PathParam("table") String table,  String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
-        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
-        def resultSet = sql.connection.metaData.getColumns(null, null, table, null)
-        def tables = getMap(resultSet)
-        return new JsonBuilder(tables).toString()
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+
+        def columns      = getMap(sql.connection.metaData.getColumns(null, null, table, null))
+        def exportedKeys = getMap(sql.connection.metaData.getExportedKeys(null, null, table))
+        def importedKeys = getMap(sql.connection.metaData.getImportedKeys(null, null, table))
+        return new JsonBuilder([columns:columns, exportedKeys:exportedKeys, importedKeys: importedKeys]).toString()
     }
 
     @Path("/static/{path:.+}") @GET @Produces("text/plain")

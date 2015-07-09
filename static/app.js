@@ -3,10 +3,21 @@ angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys', 'ngStorage'])
 
 function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal, orderByFilter) {
     $scope.$storage = $localStorage;
-    $scope.requestMode = 'Manual';
+    $scope.requestMode = 'Form';
+    $scope.con = {
+        url: 'jdbc:mysql://localhost:3306/wp',
+        user: "root",
+        pwd: ""
+    };
     $scope.request = 'select * from TDO210_DOC_ID FETCH FIRST 10 ROWS ONLY;'//"select * from users;"
     $scope.headers = [];
     $scope.exeRequest = function(){
+        switch ($scope.requestMode) {
+            case'Form':
+                $scope.criteriaToSql($scope.table, $scope.metadata.columns, $scope.criterias);
+                break;
+        }
+
        $http.post('request', {con:$scope.$storage.con, request: $scope.request}).success(function(rows){
            $scope.headers = _.keys(rows[0]);
            $scope.rows = rows;
@@ -19,23 +30,47 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
             $scope.exeRequest();
         }
     });
+    $scope.criteriaToSql = function(table, columns, criterias){
+        var isFirst = true, sql = 'SELECT * FROM ' + table;
+        if(_.size(criterias) > 0){
+            _.forEach(columns, function(column){
+                var criteria = criterias[column.COLUMN_NAME];
+                if(criteria){
+                    sql += isFirst ? ' WHERE ' : ' AND ';
+                    sql += criteria ? ' ' + column.COLUMN_NAME + '="' + criteria + '"' : '';
+                    isFirst = false;
+                }
+            });
+
+        }
+        sql += ';';
+        $scope.request = sql;
+        $log.info(sql)
+    };
+
+
     $scope.tables = [];
     $scope.getTables = function(){
         $http.post('tables', {con:$scope.$storage.con}).success(function(rows){
             $scope.tables = rows;
         });
     };
-    $scope.getTables();
+
     $scope.onTableSelect = function($item, $model, $label){
-        $scope.getColumns($item.TABLE_NAME);
+        $scope.table = $item.TABLE_NAME;
+        $scope.getMetadata($item.TABLE_NAME);
     };
-    $scope.columns = [];
+    $scope.metadata = {};
     $scope.criterias = {};
-    $scope.getColumns = function(tableName){
-        $http.post('columns/' + tableName, {con:$scope.$storage.con}).success(function(columns){
-            $scope.columns = columns;
+    $scope.getMetadata = function(tableName){
+        $http.post('metadata/' + tableName, {con:$scope.$storage.con}).success(function(metadata){
+            $scope.metadata = metadata;
         });
     };
 
+
+
+    //init
+    $scope.getTables();
 
 }

@@ -85,14 +85,14 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-switch="requestMode">
-            <form ng-switch-when="Manual">
+        <div class="row">
+            <form ng-show="requestMode == 'Manual'">
                 <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
                 <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
                 <button class="form-control btn btn-default" ng-click="getTables()">Tables</button>
                 <button class="form-control btn btn-default" ng-click="getMetadata()">Metadata</button>
             </form>
-            <div ng-switch-when="Form">
+            <div ng-show="requestMode == 'Form'">
                 <form  class="form-horizontal mystyle">
                     <div class="form-group col-md-6" ng-repeat="c in metadata.columns">
                         <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>

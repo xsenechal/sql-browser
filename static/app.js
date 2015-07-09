@@ -4,11 +4,6 @@ angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys', 'ngStorage'])
 function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal, orderByFilter) {
     $scope.$storage = $localStorage;
     $scope.requestMode = 'Form';
-    $scope.con = {
-        url: 'jdbc:mysql://localhost:3306/wp',
-        user: "root",
-        pwd: ""
-    };
     $scope.request = 'select * from TDO210_DOC_ID FETCH FIRST 10 ROWS ONLY;'//"select * from users;"
     $scope.headers = [];
     $scope.exeRequest = function(){
@@ -32,12 +27,13 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
     });
     $scope.criteriaToSql = function(table, columns, criterias){
         var isFirst = true, sql = 'SELECT * FROM ' + table;
+        $log.info('criteria', criterias);
         if(_.size(criterias) > 0){
             _.forEach(columns, function(column){
                 var criteria = criterias[column.COLUMN_NAME];
                 if(criteria){
                     sql += isFirst ? ' WHERE ' : ' AND ';
-                    sql += criteria ? ' ' + column.COLUMN_NAME + '="' + criteria + '"' : '';
+                    sql += criteria ? ' ' + column.COLUMN_NAME + '=\'' + criteria + '\'' : '';
                     isFirst = false;
                 }
             });

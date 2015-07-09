@@ -19,6 +19,8 @@ import org.glassfish.grizzly.http.server.HttpServer
         @Grab('com.sun.jersey:jersey-grizzly2:1.12'),
         @Grab('javax.ws.rs:jsr311-api:1.1.1'),
         @Grab('mysql:mysql-connector-java:5.1.35')
+//        @Grab('com.ibm.db2:db2jcc:3.50.152'),
+//        @Grab('com.ibm.db2:db2jcc_license_cisuz:1.0')
 ])
 
 @Path("/")
@@ -35,7 +37,8 @@ class Main {
     public String getTables(String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
         groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
-        def resultSet = sql.connection.metaData.getTables(null, client.con.schema, "TDO%", ['TABLE'])
+        String[] tableType =  ["TABLE"].toArray(String);
+        def resultSet = sql.connection.metaData.getTables(null, client.con.schema, client.con.tableFilter, tableType )
         def tables = getMap(resultSet)
         return new JsonBuilder(tables).toString()
     }
@@ -43,9 +46,9 @@ class Main {
     @Path("/metadata/{table}") @POST @Produces("application/json")
     public String getColumns(@PathParam("table") String table,  String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
-        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
 
-        def columns      = getMap(sql.connection.metaData.getColumns(null, null, table, null))
+        def columns      = getMap(sql.connection.metaData.getColumns(null, client.con.schema, table, null))
         def exportedKeys = getMap(sql.connection.metaData.getExportedKeys(null, null, table))
         def importedKeys = getMap(sql.connection.metaData.getImportedKeys(null, null, table))
         return new JsonBuilder([columns:columns, exportedKeys:exportedKeys, importedKeys: importedKeys]).toString()

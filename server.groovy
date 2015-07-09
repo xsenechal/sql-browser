@@ -18,7 +18,8 @@ import org.glassfish.grizzly.http.server.HttpServer
         @Grab('com.sun.jersey:jersey-core:1.12'),
         @Grab('com.sun.jersey:jersey-grizzly2:1.12'),
         @Grab('javax.ws.rs:jsr311-api:1.1.1'),
-        @Grab('mysql:mysql-connector-java:5.1.35')])
+        @Grab('mysql:mysql-connector-java:5.1.35')
+])
 
 @Path("/")
 class Main {

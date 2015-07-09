@@ -1,17 +1,13 @@
-angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys'])
+angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys', 'ngStorage'])
     .controller('MainCtrl', MainCtrl);
 
-function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter) {
+function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal, orderByFilter) {
+    $scope.$storage = $localStorage;
     $scope.requestMode = 'Manual';
-    $scope.con = {
-        url: 'jdbc:mysql://localhost:3306/wp',
-        user: "root",
-        password: ""
-    };
-    $scope.request = 'select * from information_schema.tables;'//"select * from users;"
+    $scope.request = 'select * from TDO210_DOC_ID FETCH FIRST 10 ROWS ONLY;'//"select * from users;"
     $scope.headers = [];
     $scope.exeRequest = function(){
-       $http.post('request', {con:$scope.con, request: $scope.request}).success(function(rows){
+       $http.post('request', {con:$scope.$storage.con, request: $scope.request}).success(function(rows){
            $scope.headers = _.keys(rows[0]);
            $scope.rows = rows;
        });
@@ -25,7 +21,7 @@ function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter
     });
     $scope.tables = [];
     $scope.getTables = function(){
-        $http.post('tables', {con:$scope.con}).success(function(rows){
+        $http.post('tables', {con:$scope.$storage.con}).success(function(rows){
             $scope.tables = rows;
         });
     };
@@ -36,7 +32,7 @@ function MainCtrl($scope, $http, $log, hotkeys, $document, $modal, orderByFilter
     $scope.columns = [];
     $scope.criterias = {};
     $scope.getColumns = function(tableName){
-        $http.post('columns/' + tableName, {con:$scope.con}).success(function(columns){
+        $http.post('columns/' + tableName, {con:$scope.$storage.con}).success(function(columns){
             $scope.columns = columns;
         });
     };

@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-hotkeys/1.4.5/hotkeys.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
     <script src="static/app.js"></script>
     <style>
         .mystyle input[type="text"] {
@@ -39,13 +40,19 @@
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form navbar-right">
                 <div class="form-group">
-                    <input ng-model="con.url" type="text" placeholder="jdbc url" class="form-control">
+                    <input ng-model="$storage.con.url" type="text" placeholder="jdbc url" class="form-control">
                 </div>
                 <div class="form-group">
-                    <input ng-model="con.user" type="text" placeholder="user" class="form-control">
+                    <input ng-model="$storage.con.user" type="text" placeholder="user" class="form-control">
                 </div>
                 <div class="form-group">
-                    <input ng-model="con.password" type="text" placeholder="password" class="form-control">
+                    <input ng-model="$storage.con.password" type="text" placeholder="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input ng-model="$storage.con.driverClass" type="text" placeholder="driverClass" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input ng-model="$storage.con.schema" type="text" placeholder="schema" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Test</button>
             </form>

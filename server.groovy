@@ -13,12 +13,11 @@ import org.glassfish.grizzly.http.server.HttpServer
  * https://theholyjava.wordpress.com/2012/04/04/exposing-functionality-over-http-with-groovy-and-ultra-lightweight-http-servers/
  */
 @GrabConfig(systemClassLoader = true)
-@GrabResolver(name = 'gretty', root = 'http://groovypp.artifactoryonline.com/groovypp/libs-releases-local')
 @Grapes([
         @Grab('com.sun.jersey:jersey-server:1.12'),
         @Grab('com.sun.jersey:jersey-core:1.12'),
-        @Grab(group='com.sun.jersey', module='jersey-grizzly2', version='1.12'),
-        @Grab(group='javax.ws.rs', module='jsr311-api', version='1.1.1'),
+        @Grab('com.sun.jersey:jersey-grizzly2:1.12'),
+        @Grab('javax.ws.rs:jsr311-api:1.1.1'),
         @Grab('mysql:mysql-connector-java:5.1.35')])
 
 @Path("/")
@@ -27,15 +26,15 @@ class Main {
     @Path("/request") @POST @Produces("application/json")
     public String exeRequest(String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
-        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
         def result = sql.rows(client.request)
         return new JsonBuilder(result).toString()
     }
     @Path("/tables") @POST @Produces("application/json")
     public String getTables(String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
-        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
-        def resultSet = sql.connection.metaData.getTables(null, null, null, null)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
+        def resultSet = sql.connection.metaData.getTables(null, client.con.schema, "TDO%", ['TABLE'])
         def tables = getMap(resultSet)
         return new JsonBuilder(tables).toString()
     }
@@ -43,7 +42,7 @@ class Main {
     @Path("/columns/{table}") @POST @Produces("application/json")
     public String getColumns(@PathParam("table") String table,  String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
-        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.psw)
+        groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
         def resultSet = sql.connection.metaData.getColumns(null, null, table, null)
         def tables = getMap(resultSet)
         return new JsonBuilder(tables).toString()

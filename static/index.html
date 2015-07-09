@@ -118,6 +118,12 @@
             <tr ng-repeat="r in rows track by $index">
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="h in headers">{{r[h]}}</td>
+                <td ng-repeat="exKey in metadata.exportedKeys">
+                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="goToExported(r, exKey)" tooltip="{{exKey.FKTABLE_NAME}}">
+                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                    </button>
+
+                </td>
             </tr>
         </table>
 

@@ -64,6 +64,14 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
         });
     };
 
+    $scope.goToExported = function(row, exKey){
+        $log.info('exported:', row);
+        $log.info('exportedkey:', exKey);
+        $scope.requestMode = 'Manual';
+        $scope.request = 'SELECT * FROM ' + exKey.FKTABLE_NAME + ' WHERE ' + exKey.FKCOLUMN_NAME + ' = \'' + row[exKey.FKCOLUMN_NAME] + '\';';
+        $scope.exeRequest();
+    };
+
 
 
     //init

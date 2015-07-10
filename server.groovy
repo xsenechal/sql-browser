@@ -18,13 +18,15 @@ import org.glassfish.grizzly.http.server.HttpServer
         @Grab('com.sun.jersey:jersey-core:1.12'),
         @Grab('com.sun.jersey:jersey-grizzly2:1.12'),
         @Grab('javax.ws.rs:jsr311-api:1.1.1'),
-        @Grab('mysql:mysql-connector-java:5.1.35')
-//        @Grab('com.ibm.db2:db2jcc:3.50.152'),
-//        @Grab('com.ibm.db2:db2jcc_license_cisuz:1.0')
 ])
 
 @Path("/")
 class Main {
+
+    static final JDBC_JAR_FOLDER = "./lib"
+    static final APP_URI = "http://localhost/"
+    static final APP_PORT = 6789
+
 
     @Path("/request") @POST @Produces("application/json")
     public String exeRequest(String clientJson) {
@@ -64,9 +66,11 @@ class Main {
         return getStatic('index.html')
     }
 
-    public static startServer() {
+    public startServer() {
+        new File(JDBC_JAR_FOLDER).eachFile { println "adding ${it.name} to classpath"; this.class.classLoader.rootLoader.addURL(it.toURL()) }
+
         ResourceConfig resources = new ClassNamesResourceConfig(Main)
-        def uri = UriBuilder.fromUri("http://localhost/").port(6789).build();
+        def uri = UriBuilder.fromUri(APP_URI).port(APP_PORT).build();
         HttpServer httpServer = GrizzlyServerFactory.createHttpServer(uri, resources);
         println("Jersey app started at ${uri}")
         System.in.read();
@@ -82,4 +86,4 @@ class Main {
     }
 }
 
-Main.startServer()
+new Main().startServer()

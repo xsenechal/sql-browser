@@ -32,7 +32,7 @@ class Main {
     public String exeRequest(String clientJson) {
         def client = new JsonSlurper().parseText(clientJson)
         groovy.sql.Sql sql = Sql.newInstance(client.con.url, client.con.user, client.con.password, client.con.driverClass)
-        def result = sql.rows(client.request)
+        def result = sql.rows(client.request as String, 0, client.con.limit, null)
         return new JsonBuilder(result).toString()
     }
     @Path("/tables") @POST @Produces("application/json")

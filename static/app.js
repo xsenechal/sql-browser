@@ -3,6 +3,7 @@ angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys', 'ngStorage'])
 
 function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal, orderByFilter) {
     $scope.$storage = $localStorage;
+    $scope.$storage.con.limit = 15;
     $scope.requestMode = 'Form';
     $scope.request = 'select * from TDO210_DOC_ID FETCH FIRST 10 ROWS ONLY;'//"select * from users;"
     $scope.headers = [];

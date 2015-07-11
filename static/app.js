@@ -22,6 +22,8 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
     };
     hotkeys.add({
         combo: 'ctrl+enter',
+        description: 'Execute request',
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA'],
         callback: function(e) {
             e.preventDefault();
             $scope.exeRequest();

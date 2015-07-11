@@ -81,14 +81,14 @@
                 <div class="form-group">
                     <label for="inputTable" class="col-sm-2 control-label">Table</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control mousetrap" id="inputTable" ng-model="selected.table" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
+                        <input type="text" class="form-control" id="inputTable" ng-model="selected.table" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <form ng-show="requestMode == 'Manual'">
-                <textarea class="form-control mousetrap" rows="3" ng-model="request"></textarea>
+                <textarea class="form-control" rows="3" ng-model="request"></textarea>
                 <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>
             </form>
             <div ng-show="requestMode == 'Form'">
@@ -96,7 +96,7 @@
                     <div class="form-group col-md-6" ng-repeat="c in metadata.columns">
                         <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control mousetrap" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})" ng-trim="false">
+                            <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})" ng-trim="false">
                         </div>
                     </div>
                     <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>

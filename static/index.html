@@ -81,7 +81,7 @@
                 <div class="form-group">
                     <label for="inputTable" class="col-sm-2 control-label">Table</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control mousetrap" id="inputTable" ng-model="selectedTable" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
+                        <input type="text" class="form-control mousetrap" id="inputTable" ng-model="selected.table" typeahead-on-select="onTableSelect($item, $model, $label)" typeahead="table as table.TABLE_NAME for table in tables | filter:{TABLE_NAME:$viewValue} | limitTo:8">
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             <tr ng-repeat="r in rows track by $index">
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="h in headers">{{r[h]}}</td>
-                <td ng-repeat="exKey in metadata.exportedKeys">
+                <td ng-repeat="exKey in metadata.exportedCompositeKeys">
                     <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="goToExported(r, exKey)" tooltip="{{exKey.FKTABLE_NAME}}">
                         <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
                     </button>

@@ -4,20 +4,21 @@ angular.module('sql-browser', ['ui.bootstrap', 'cfp.hotkeys', 'ngStorage'])
 function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal, orderByFilter) {
     $scope.$storage = $localStorage;
     $scope.$storage.con.limit = 15;
+    $scope.selected = {};
     $scope.requestMode = 'Form';
     $scope.request = 'select * from TDO210_DOC_ID FETCH FIRST 10 ROWS ONLY;'//"select * from users;"
     $scope.headers = [];
     $scope.exeRequest = function(){
         switch ($scope.requestMode) {
             case'Form':
-                $scope.criteriaToSql($scope.table, $scope.metadata.columns, $scope.criterias);
+                $scope.criteriaToSql($scope.selected.table.TABLE_NAME, $scope.metadata.columns, $scope.criterias);
                 break;
         }
-
-       $http.post('request', {con:$scope.$storage.con, request: $scope.request}).success(function(rows){
+        $log.info('exeRequest: ' + $scope.request);
+        $http.post('request', {con:$scope.$storage.con, request: $scope.request}).success(function(rows){
            $scope.headers = _.keys(rows[0]);
            $scope.rows = rows;
-       });
+        });
     };
     hotkeys.add({
         combo: 'ctrl+enter',
@@ -28,7 +29,6 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
     });
     $scope.criteriaToSql = function(table, columns, criterias){
         var isFirst = true, sql = 'SELECT * FROM ' + table;
-        $log.info('criteria', criterias);
         if(_.size(criterias) > 0){
             _.forEach(columns, function(column){
                 var criteria = criterias[column.COLUMN_NAME];
@@ -42,7 +42,6 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
         }
         sql += ';';
         $scope.request = sql;
-        $log.info(sql)
     };
 
 
@@ -54,7 +53,6 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
     };
 
     $scope.onTableSelect = function($item, $model, $label){
-        $scope.table = $item.TABLE_NAME;
         $scope.getMetadata($item.TABLE_NAME);
     };
     $scope.metadata = {};
@@ -62,14 +60,19 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
     $scope.getMetadata = function(tableName){
         $http.post('metadata/' + tableName, {con:$scope.$storage.con}).success(function(metadata){
             $scope.metadata = metadata;
+            $scope.metadata.exportedCompositeKeys = _.groupBy(metadata.exportedKeys, 'FK_NAME');
         });
     };
 
-    $scope.goToExported = function(row, exKey){
-        $log.info('exported:', row);
-        $log.info('exportedkey:', exKey);
-        $scope.requestMode = 'Manual';
-        $scope.request = 'SELECT * FROM ' + exKey.FKTABLE_NAME + ' WHERE ' + exKey.FKCOLUMN_NAME + ' = \'' + row[exKey.FKCOLUMN_NAME] + '\';';
+    $scope.goToExported = function(row, exKeys){
+        var exportedTable = exKeys[0].FKTABLE_NAME;
+        $scope.selected.table = _.findWhere($scope.tables, {TABLE_NAME:exportedTable});
+        $scope.criterias = {};
+        _.each(exKeys, function(exKey){
+            $scope.criterias[exKey.FKCOLUMN_NAME] = row[exKey.FKCOLUMN_NAME]
+        });
+        $scope.getMetadata(exportedTable);
+        $scope.criteriaToSql(exportedTable, $scope.metadata.columns, $scope.criterias);
         $scope.exeRequest();
     };
 

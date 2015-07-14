@@ -29,6 +29,24 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
             $scope.exeRequest();
         }
     });
+    $scope.inputHotkeys = function(c, event){
+        var inputValue = $scope.criterias[c.COLUMN_NAME];
+        //ctrl+u => uppercase
+        if(event.ctrlKey && event.keyCode == 85){
+            inputValue = inputValue.toUpperCase();
+        }
+        //ctrl+l => left padd
+        else if(event.ctrlKey && event.keyCode == 76){
+            inputValue = pad(inputValue, c.COLUMN_SIZE, ' ', 1)
+        }
+        //ctrl+r => right padd
+        else if(event.ctrlKey && event.keyCode == 82){
+            inputValue = pad(inputValue, c.COLUMN_SIZE, ' ', 2)
+        }
+
+        $scope.criterias[c.COLUMN_NAME] = inputValue;
+
+    };
     $scope.criteriaToSql = function(table, columns, criterias){
         var isFirst = true, sql = 'SELECT * FROM ' + table;
         if(_.size(criterias) > 0){

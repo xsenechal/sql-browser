@@ -13,6 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-hotkeys/1.4.5/hotkeys.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
+    <script src="static/utils.js"></script>
     <script src="static/app.js"></script>
     <style>
         .mystyle input[type="text"] {
@@ -96,7 +97,7 @@
                     <div class="form-group col-md-6" ng-repeat="c in metadata.columns">
                         <label for="{{c.COLUMN_NAME}}" class="col-md-4 control-label">{{c.COLUMN_NAME}}</label>
                         <div class="col-md-8">
-                            <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})" ng-trim="false">
+                            <input type="text" class="form-control" id="{{c.COLUMN_NAME}}" ng-model="criterias[c.COLUMN_NAME]" tooltip="{{c.TYPE_NAME}}({{c.COLUMN_SIZE}})" ng-trim="false" ng-keyup="inputHotkeys(c, $event)">
                         </div>
                     </div>
                     <button class="form-control btn btn-default" ng-click="exeRequest()">Exe</button>

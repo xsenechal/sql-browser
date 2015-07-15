@@ -119,7 +119,7 @@
                 <td>{{$index + 1}}</td>
                 <td ng-repeat="h in headers">{{r[h]}}</td>
                 <td ng-repeat="exKey in metadata.exportedCompositeKeys">
-                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="goToExported(r, exKey)" tooltip="{{exKey.FKTABLE_NAME}}">
+                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="goToExported(r, exKey)" tooltip="{{exKey[0].FKTABLE_NAME}}">
                         <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
                     </button>
 

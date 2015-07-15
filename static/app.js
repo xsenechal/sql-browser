@@ -81,6 +81,7 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
         $http.post('metadata/' + tableName, {con:$scope.$storage.con}).success(function(metadata){
             $scope.metadata = metadata;
             $scope.metadata.exportedCompositeKeys = _.groupBy(metadata.exportedKeys, 'FK_NAME');
+            $scope.metadata.importedCompositeKeys = _.groupBy(metadata.importedKeys, 'FK_NAME');
         });
     };
 
@@ -93,6 +94,18 @@ function MainCtrl($scope, $http, $log, hotkeys, $localStorage, $document, $modal
         });
         $scope.getMetadata(exportedTable);
         $scope.criteriaToSql(exportedTable, $scope.metadata.columns, $scope.criterias);
+        $scope.exeRequest();
+    };
+
+    $scope.goToImported = function(row, imKeys){
+        var importedTable = imKeys[0].PKTABLE_NAME;
+        $scope.selected.table = _.findWhere($scope.tables, {TABLE_NAME:importedTable});
+        $scope.criterias = {};
+        _.each(imKeys, function(imKey){
+            $scope.criterias[imKey.PKCOLUMN_NAME] = row[imKey.PKCOLUMN_NAME]
+        });
+        $scope.getMetadata(importedTable);
+        $scope.criteriaToSql(importedTable, $scope.metadata.columns, $scope.criterias);
         $scope.exeRequest();
     };
 

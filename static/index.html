@@ -116,7 +116,11 @@
                 <th ng-repeat="h in headers">{{ h }}</th>
             </tr>
             <tr ng-repeat="r in rows track by $index">
-                <td>{{$index + 1}}</td>
+                <td>{{$index + 1}}
+                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-repeat="imKey in metadata.importedCompositeKeys" ng-click="goToImported(r, imKey)" tooltip="{{imKey[0].PKTABLE_NAME}}">
+                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                    </button>
+                </td>
                 <td ng-repeat="h in headers">{{r[h]}}</td>
                 <td ng-repeat="exKey in metadata.exportedCompositeKeys">
                     <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="goToExported(r, exKey)" tooltip="{{exKey[0].FKTABLE_NAME}}">
